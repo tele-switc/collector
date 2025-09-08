@@ -1,135 +1,157 @@
-# collector
----
-AIGC:
-  Label: '1'
-  ContentProducer: '001191110108MA01KP2T5U00000'
-  ProduceID: '2c4ac2ec-377f-4672-89b5-2f6303028417'
-  ReservedCode1: 'b39cdee1-96c1-42a7-b605-ed5662cf6c4c'
-  ContentPropagator: '001191110108MA01KP2T5U00000'
-  PropagateID: 'c38984a6-3181-4d30-847a-4690ef690ebc'
-  ReservedCode2: '8265bfc7-7405-4865-858b-af0d73e4afe6'
----
+# 📰 每日外刊精选 - Daily Foreign Media Collection
 
-# 外刊自动收集与展示系统
+自动收集并展示全球顶级媒体文章的GitHub项目，每天早上8点自动更新！
 
-一个自动收集外刊文章并生成精美展示网站的项目。
+## ✨ 功能特点
 
-## 功能特点
+- 🤖 **全自动运行**：使用GitHub Actions每天早上8点自动收集
+- 🌍 **六大顶级媒体**：连线、经济学人、科学美国人、大西洋月刊、纽约时报、华尔街日报
+- 🎨 **精美界面**：现代化响应式设计，支持手机和电脑浏览
+- 🔍 **智能去重**：自动过滤重复文章
+- 📅 **历史存档**：从2025年开始的所有文章永久保存
+- 🚀 **零成本部署**：完全基于GitHub，无需服务器
 
-- 自动收集连线、经济学人、美国科学人、Atlantic、纽约时报和华尔街日报的文章
-- 每天早上8点自动更新最新文章
-- 智能去重处理，避免重复内容
-- 从2025年初开始收集所有文章
-- 响应式网站设计，完美支持移动端浏览
-- 使用GitHub Actions实现自动化任务
+## 🛠️ 一键部署指南
 
-## 项目结构
+### 第一步：Fork这个仓库
 
+1. 点击本页面右上角的 **Fork** 按钮
+2. 选择你的GitHub账号
+3. 等待Fork完成
 
+### 第二步：启用GitHub Pages
+
+1. 进入你Fork后的仓库
+2. 点击 **Settings**（设置）
+3. 在左侧菜单找到 **Pages**
+4. 在 **Source** 下拉菜单选择 **Deploy from a branch**
+5. 在 **Branch** 下拉菜单选择 **main**
+6. 文件夹选择 **/ (root)**
+7. 点击 **Save** 保存
+
+### 第三步：启用GitHub Actions
+
+1. 点击仓库的 **Actions** 标签
+2. 如果看到提示，点击 **"I understand my workflows, go ahead and enable them"**
+3. 找到 **Collect Daily Articles** workflow
+4. 点击 **Enable workflow**
+
+### 第四步：创建初始数据文件夹
+
+1. 回到仓库主页
+2. 点击 **Create new file**
+3. 在文件名输入框输入：`data/articles.json`
+4. 在文件内容输入：`[]`
+5. 点击 **Commit new file**
+
+### 第五步：手动运行一次（可选）
+
+1. 进入 **Actions** 标签
+2. 选择 **Collect Daily Articles**
+3. 点击右侧的 **Run workflow**
+4. 点击绿色的 **Run workflow** 按钮
+5. 等待运行完成（约2-3分钟）
+
+### 第六步：访问你的网站
+
+1. 等待5-10分钟让GitHub Pages生效
+2. 访问：`https://[你的用户名].github.io/[仓库名]/`
+3. 例如：`https://yourname.github.io/news-aggregator/`
+
+## 📁 项目结构
+
+```
 .
-├── README.md                 # 项目说明文档
-├── requirements.txt          # Python依赖包
-├── .gitignore               # Git忽略文件
-├── scraper/                 # 爬虫模块
-│   ├── __init__.py
-│   ├── config.py            # 配置文件
-│   ├── models.py            # 数据模型
-│   ├── database.py          # 数据库操作
-│   ├── scrapers.py          # 爬虫实现
-│   └── utils.py             # 工具函数
-├── website/                 # 网站生成模块
-│   ├── __init__.py
-│   ├── generator.py         # 网站生成器
-│   ├── static/              # 静态资源
-│   │   ├── css/             # CSS样式
-│   │   ├── js/              # JavaScript脚本
-│   │   └── images/          # 图片资源
-│   └── templates/           # HTML模板
-│       ├── index.html       # 首页模板
-│       ├── article.html     # 文章详情模板
-│       └── layout.html      # 布局模板
-├── data/                    # 数据存储目录
-│   └── articles.db          # SQLite数据库
-├── scripts/                 # 脚本目录
-│   └── run_scraper.py       # 爬虫运行脚本
-└── .github/                 # GitHub Actions配置
-    └── workflows/
-        └── scheduled_scraper.yml  # 定时任务配置
+├── .github/
+│   └── workflows/
+│       └── collect-articles.yml    # GitHub Actions工作流
+├── data/
+│   └── articles.json               # 文章数据存储
+├── index.html                      # 网站主页
+├── collector.py                    # 文章收集脚本
+├── requirements.txt                # Python依赖
+└── README.md                       # 本文档
+```
 
+## ⚙️ 配置说明
 
-## 安装与使用
+### 修改收集时间
 
-### 环境要求
+编辑 `.github/workflows/collect-articles.yml` 文件中的cron表达式：
 
-- Python 3.8+
-- Git
+```yaml
+schedule:
+  - cron: '0 0 * * *'  # UTC时间0点 = 北京时间早上8点
+```
 
-### 安装步骤
+### 添加或删除媒体源
 
-1. 克隆仓库
-   bash
-   git clone https://github.com/yourusername/foreign-magazines-collector.git
-   cd foreign-magazines-collector
-   
+编辑 `collector.py` 文件，在相应的收集函数中添加或删除RSS源。
 
-2. 安装依赖
-   bash
-   pip install -r requirements.txt
-   
+### 自定义网站样式
 
-3. 配置爬虫
-   编辑 `scraper/config.py` 文件，设置相关参数。
+编辑 `index.html` 文件中的CSS样式部分。
 
-4. 运行爬虫
-   bash
-   python scripts/run_scraper.py
-   
+## 📊 数据格式
 
-5. 生成网站
-   bash
-   python website/generator.py
-   
+文章数据以JSON格式存储在 `data/articles.json`：
 
-### 定时任务
+```json
+[
+  {
+    "id": "abc12345",
+    "source": "wired",
+    "title": "文章标题",
+    "url": "https://...",
+    "summary": "文章摘要...",
+    "image": "https://...",
+    "date": "2025-01-01",
+    "collected_at": "2025-01-01T08:00:00"
+  }
+]
+```
 
-项目使用GitHub Actions实现定时任务，每天早上8点自动运行爬虫并更新网站。您可以在 `.github/workflows/scheduled_scraper.yml` 中修改定时设置。
+## 🔧 故障排除
 
-## 数据库结构
+### GitHub Actions没有运行？
 
-项目使用SQLite数据库存储文章信息，主要包含以下表：
+1. 确保Actions已启用
+2. 检查 `.github/workflows/collect-articles.yml` 文件格式是否正确
+3. 查看Actions标签页的错误日志
 
-- `articles`: 存储文章基本信息
-  - id: 文章ID
-  - title: 文章标题
-  - url: 文章链接
-  - source: 来源网站
-  - publish_date: 发布日期
-  - content: 文章内容
-  - summary: 文章摘要
-  - created_at: 记录创建时间
-  - updated_at: 记录更新时间
+### 网站无法访问？
 
-## 网站展示
+1. 确保GitHub Pages已正确配置
+2. 等待5-10分钟让配置生效
+3. 检查仓库是否为公开（Public）
 
-生成的网站具有以下特点：
+### 没有收集到文章？
 
-- 响应式设计，适配各种设备
-- 按来源和日期分类展示文章
-- 文章搜索功能
-- 简洁美观的界面设计
-- 快速加载，优化用户体验
+1. 手动运行一次Action查看日志
+2. 某些RSS源可能暂时无法访问
+3. 检查 `requirements.txt` 中的依赖是否都已安装
 
-## 贡献指南
+## 📈 后续优化建议
 
-欢迎提交Issue和Pull Request来改进项目。
+- [ ] 添加文章全文提取功能
+- [ ] 增加文章分类和标签
+- [ ] 添加阅读统计
+- [ ] 支持更多媒体源
+- [ ] 添加邮件订阅功能
+- [ ] 实现文章翻译功能
 
-## 许可证
+## 📝 许可证
 
-本项目采用MIT许可证。详情请参阅LICENSE文件。
+MIT License - 自由使用和修改
 
-## 联系方式
+## 🤝 贡献
 
-如有问题或建议，请通过以下方式联系：
+欢迎提交Issues和Pull Requests！
 
-- 邮箱: your.email@example.com
-- GitHub: https://github.com/yourusername
+## 💬 联系方式
+
+如有问题，请在Issues中提出。
+
+---
+
+**注意**：本项目仅用于个人学习和研究，收集的文章版权归原作者所有。请勿用于商业用途。
