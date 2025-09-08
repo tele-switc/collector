@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>每日外刊精选 - Daily Foreign Media Collection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --text-light: #7f8c8d;
+            --border-color: #e1e8ed;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+            border-radius: 15px;
+        }
+
+        .header-content {
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.1em;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9em;
+        }
+
+        .filters {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .source-filter {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .source-btn {
+            padding: 8px 16px;
+            border: 2px solid var(--border-color);
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .source-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .source-btn.active {
+            background: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+
+        .search-box {
+            padding: 10px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            width: 300px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .article-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .article-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .article-content {
+            padding: 20px;
+        }
+
+        .article-source {
+            display: inline-block;
+            padding: 4px 10px;
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .article-date {
+            color: var(--text-light);
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .article-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .article-summary {
+            color: var(--text-light);
+            font-size: 0.95em;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .article-link {
+            display: inline-block;
+            margin-top: 15px;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .article-link:hover {
+            color: var(--accent-color);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .no-articles {
+            text-align: center;
+            padding: 50px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            color: var(--text-light);
+        }
+
+        .date-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .date-btn {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .date-btn:hover {
+            background: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: white;
+            margin-top: 50px;
+        }
+
+        /* Loading Animation */
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid white;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>📰 每日外刊精选</h1>
+                <p class="subtitle">汇集全球顶级媒体，洞察世界动态</p>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalArticles">0</div>
+                        <div class="stat-label">篇文章</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalDays">0</div>
+                        <div class="stat-label">天收集</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">6</div>
+                        <div class="stat-label">家媒体</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="filters">
+            <div class="filter-group">
+                <span class="filter-label">媒体源：</span>
+                <div class="source-filter">
+                    <button class="source-btn active" data-source="all">全部</button>
+                    <button class="source-btn" data-source="wired">连线</button>
+                    <button class="source-btn" data-source="economist">经济学人</button>
+                    <button class="source-btn" data-source="scientific-american">科学美国人</button>
+                    <button class="source-btn" data-source="atlantic">大西洋月刊</button>
+                    <button class="source-btn" data-source="nytimes">纽约时报</button>
+                    <button class="source-btn" data-source="wsj">华尔街日报</button>
+                </div>
+            </div>
+            <div class="filter-group" style="margin-top: 15px;">
+                <input type="text" class="search-box" placeholder="搜索文章标题..." id="searchInput">
+            </div>
+        </div>
+
+        <div class="date-navigation">
+            <button class="date-btn" id="prevDay">← 前一天</button>
+            <button class="date-btn" id="todayBtn">今天</button>
+            <button class="date-btn" id="nextDay">后一天 →</button>
+        </div>
+
+        <div id="articlesContainer">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p style="margin-top: 20px;">正在加载文章...</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2025 每日外刊精选 | 每日早8点自动更新</p>
+        <p style="margin-top: 10px; opacity: 0.8;">Powered by GitHub Actions & GitHub Pages</p>
+    </footer>
+
+    <script>
+        let allArticles = [];
+        let currentDate = new Date().toISOString().split('T')[0];
+        let filteredArticles = [];
+
+        // 源名称映射
+        const sourceNames = {
+            'wired': '连线',
+            'economist': '经济学人',
+            'scientific-american': '科学美国人',
+            'atlantic': '大西洋月刊',
+            'nytimes': '纽约时报',
+            'wsj': '华尔街日报'
+        };
+
+        // 源颜色映射
+        const sourceColors = {
+            'wired': '#000000',
+            'economist': '#e3120b',
+            'scientific-american': '#0099cc',
+            'atlantic': '#ff6b6b',
+            'nytimes': '#111111',
+            'wsj': '#0080c0'
+        };
+
+        async function loadArticles() {
+            try {
+                const response = await fetch('data/articles.json');
+                if (!response.ok) {
+                    throw new Error('Failed to load articles');
+                }
+                allArticles = await response.json();
+                
+                // 更新统计
+                updateStats();
+                
+                // 显示今天的文章
+                filterArticlesByDate(currentDate);
+            } catch (error) {
+                console.error('Error loading articles:', error);
+                document.getElementById('articlesContainer').innerHTML = `
+                    <div class="no-articles">
+                        <h3>暂无文章</h3>
+                        <p>文章数据正在收集中，请稍后再访问...</p>
+                    </div>
+                `;
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('totalArticles').textContent = allArticles.length;
+            
+            // 计算收集天数
+            const dates = [...new Set(allArticles.map(a => a.date))];
+            document.getElementById('totalDays').textContent = dates.length;
+        }
+
+        function filterArticlesByDate(date) {
+            currentDate = date;
+            filteredArticles = allArticles.filter(article => article.date === date);
+            displayArticles(filteredArticles);
+        }
+
+        function displayArticles(articles) {
+            const container = document.getElementById('articlesContainer');
+            
+            if (articles.length === 0) {
+                container.innerHTML = `
+                    <div class="no-articles">
+                        <h3>该日期暂无文章</h3>
+                        <p>当前日期：${currentDate}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const articlesHTML = articles.map(article => {
+                const sourceColor = sourceColors[article.source] || '#3498db';
+                return `
+                    <div class="article-card" onclick="window.open('${article.url}', '_blank')">
+                        ${article.image ? `<img src="${article.image}" alt="${article.title}" class="article-image">` : '<div class="article-image"></div>'}
+                        <div class="article-content">
+                            <span class="article-source" style="background: ${sourceColor}">${sourceNames[article.source] || article.source}</span>
+                            <div class="article-date">${formatDate(article.date)}</div>
+                            <h3 class="article-title">${article.title}</h3>
+                            <p class="article-summary">${article.summary || '点击查看完整文章...'}</p>
+                            <a href="${article.url}" target="_blank" class="article-link" onclick="event.stopPropagation()">阅读原文 →</a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = `<div class="articles-grid">${articlesHTML}</div>`;
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+            return date.toLocaleDateString('zh-CN', options);
+        }
+
+        // 源筛选
+        document.querySelectorAll('.source-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.source-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const source = this.dataset.source;
+                if (source === 'all') {
+                    displayArticles(filteredArticles);
+                } else {
+                    const filtered = filteredArticles.filter(a => a.source === source);
+                    displayArticles(filtered);
+                }
+            });
+        });
+
+        // 搜索功能
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            if (query === '') {
+                displayArticles(filteredArticles);
+            } else {
+                const searched = filteredArticles.filter(a => 
+                    a.title.toLowerCase().includes(query) || 
+                    (a.summary && a.summary.toLowerCase().includes(query))
+                );
+                displayArticles(searched);
+            }
+        });
+
+        // 日期导航
+        document.getElementById('prevDay').addEventListener('click', function() {
+            const date = new Date(currentDate);
+            date.setDate(date.getDate() - 1);
+            filterArticlesByDate(date.toISOString().split('T')[0]);
+        });
+
+        document.getElementById('nextDay').addEventListener('click', function() {
+            const date = new Date(currentDate);
+            date.setDate(date.getDate() + 1);
+            filterArticlesByDate(date.toISOString().split('T')[0]);
+        });
+
+        document.getElementById('todayBtn').addEventListener('click', function() {
+            filterArticlesByDate(new Date().toISOString().split('T')[0]);
+        });
+
+        // 初始化
+        loadArticles();
+    </script>
+</body>
+</html>
